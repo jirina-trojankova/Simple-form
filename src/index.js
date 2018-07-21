@@ -1,51 +1,75 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
+class Form extends React.Component {
+  constructor() {
+    super();
+    this.formHandler = this.formHandler.bind(this);
     this.state = {
-      term: '',
+      fromChild: '',
       items: []
     };
   }
 
-  onChange = (event) => {
-    this.setState({ term: event.target.value });
-  }
-
-  onSubmit = (event) => {
-    event.preventDefault();
+  formHandler(data) {
     this.setState({
-      term: '',
-      items: [...this.state.items, this.state.term]
+      fromChild: data
     });
   }
 
+
   render() {
-    return (
+    return(
       <div>
-        <form onSubmit={this.onSubmit}>
-          <input value={this.state.term} onChange={this.onChange} />
-          <button>Submit</button>
-        </form>
-        <List items={this.state.items} />
+        <Input propsHandler={this.formHandler} />
+        <Items passedValue={this.state.fromChild} />
       </div>
     );
   }
 }
 
-const List = props => (
-  <div>
-    {
-      props.items.map((item, index) => <div key={index}>{item}</div>)
-    }
-  </div>
-);
+class Input extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {value: ''};
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+    console.log(this.state.value);
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    this.props.propsHandler(this.state.value);
+    this.setState({value: ''});
+
+  }
+
+  render() {
+    return(
+      <form onSubmit={this.handleSubmit}>
+        <label htmlFor="name">Name</label>
+        <input type="text"
+               value={this.state.value}
+               onChange={this.handleChange}/>
+        <input type="submit" value="Sub"/>
+      </form>
+    );
+  }
+}
+
+class Items extends React.Component {
+  render() {
+    return(
+      <div>{this.props.passedValue}</div>
+    );
+  }
+}
 
 ReactDOM.render(
-  <App />,
+  <Form />,
   document.getElementById('root')
 );
-
-

@@ -8,26 +8,26 @@ class App extends React.Component {
     this.handleData = this.handleData.bind(this);
     this.state = {
       fromChild: ''
-    };     
+    };
   }
-    
+
   handleData(data) {
     this.setState({
       fromChild: data
     });
   }
-    
+
   render() {
     return (
       <div>
-        <InputFoo handlerFromParent={this.handleData} /> 
+        <FirstChild handlerFromParent={this.handleData} />
         <OtherChild passedVal={this.state.fromChild} />
       </div>
     );
   }
-}  
-  
-class InputFoo extends React.Component {
+}
+
+class FirstChild extends React.Component {
   constructor() {
     super();
     this.handleChange = this.handleChange.bind(this);
@@ -36,7 +36,7 @@ class InputFoo extends React.Component {
       inputField: ''
     };
   }
-  
+
   handleSubmit(event) {
     event.preventDefault();
     // pass the input field value to the event handler passed
@@ -44,7 +44,7 @@ class InputFoo extends React.Component {
     this.props.handlerFromParent(this.state.inputField);
     this.setState({inputField: ''});
   }
-  
+
   handleChange(event) {
     this.setState({inputField: event.target.value});
   }
@@ -53,26 +53,26 @@ class InputFoo extends React.Component {
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
-          <input type="text" 
-                  value={this.state.inputField} 
-                  onChange={this.handleChange} />
+          <input type="text"
+                 value={this.state.inputField}
+                 onChange={this.handleChange} />
           <input type="submit" value="Click me" />
         </form>
-        <h5>Visible in child:<br />{this.state.inputField}</h5>
+        <h5>Visible in first child:<br />{this.state.inputField}</h5>
       </div>
     );
   }
 }
 
 class OtherChild extends React.Component {
-    render() {
-      return (
-          <h1>
-          Value in OtherChild Props: {this.props.passedVal}
-          </h1>
-      )
-    }
+  render() {
+    return (
+      <h1>
+        Value in OtherChild Props: {this.props.passedVal}
+      </h1>
+    )
   }
+}
 
 
 ReactDOM.render(
