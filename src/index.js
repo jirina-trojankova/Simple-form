@@ -1,73 +1,51 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 
-class App extends React.Component{
-    constructor() {
-        super();
-        this.handleData = this.handleData.bind(this);
-        this.state = {
-          fromChild: ''
-        };     
-    }
-    handleData(data) {
-        this.setState({
-          fromChild: data
-        });
-      }
-       
-    render() {
-        return(
-            <div>
-                <Header passedValue={this.state.fromChild} />
-                <Form handlerFromParent={this.handleData} />
-            </div>
-        );
-    }
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      term: '',
+      items: []
+    };
+  }
+
+  onChange = (event) => {
+    this.setState({ term: event.target.value });
+  }
+
+  onSubmit = (event) => {
+    event.preventDefault();
+    this.setState({
+      term: '',
+      items: [...this.state.items, this.state.term]
+    });
+  }
+
+  render() {
+    return (
+      <div>
+        <form onSubmit={this.onSubmit}>
+          <input value={this.state.term} onChange={this.onChange} />
+          <button>Submit</button>
+        </form>
+        <List items={this.state.items} />
+      </div>
+    );
+  }
 }
 
-class Header extends React.Component {
-    render() {
-        return(
-            <h1>Hi! {this.props.passedValue}</h1>
-        );
+const List = props => (
+  <div>
+    {
+      props.items.map((item, index) => <div key={index}>{item}</div>)
     }
-}
-
-class Form extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {value: ''}
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-    }
-    
-    handleSubmit(event) {
-        event.preventDefault();
-        console.log(this.state.value);
-        this.props.handlerFromParent(this.state.value);
-        this.setState({value: ''});
-    }
-
-    handleChange(event) {
-        this.setState({value: event.target.value.toUpperCase()});
-        console.log(this.state.value);
-    }
-
-    render() {
-        return(
-            <form onSubmit={this.handleSubmit}>
-                <label htmlFor="name">Name:</label>
-                <input type="text" 
-                    value={this.state.value} 
-                    onChange={this.handleChange} />
-                <input type="submit" value="Submit" />
-            </form>
-        );
-    }
-
-}
+  </div>
+);
 
 ReactDOM.render(
-    <App />,
-    document.getElementById('root')
+  <App />,
+  document.getElementById('root')
 );
+
+
