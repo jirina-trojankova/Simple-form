@@ -1,75 +1,56 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react'
+import ReactDOM from 'react-dom'
+import './ErrorBoundary'
 
 class Form extends React.Component {
   constructor() {
     super();
-    this.formHandler = this.formHandler.bind(this);
     this.state = {
-      fromChild: '',
+      text: '',
       items: []
     };
-  }
-
-  formHandler(data) {
-    this.setState({
-      fromChild: data
-    });
-  }
-
-
-  render() {
-    return(
-      <div>
-        <Input propsHandler={this.formHandler} />
-        <Items passedValue={this.state.fromChild} />
-      </div>
-    );
-  }
-}
-
-class Input extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {value: ''};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange(event) {
-    this.setState({value: event.target.value});
-    console.log(this.state.value);
+    return(
+      this.setState({text: event.target.value})
+    );
   }
 
   handleSubmit(event) {
-    event.preventDefault();
-    this.props.propsHandler(this.state.value);
-    this.setState({value: ''});
-
+    event.preventDefault()
+    return(
+      this.setState({
+        text: '',
+        items: [this.state.text, ...this.state.items]
+      }));
   }
 
   render() {
     return(
-      <form onSubmit={this.handleSubmit}>
-        <label htmlFor="name">Name</label>
-        <input type="text"
-               value={this.state.value}
-               onChange={this.handleChange}/>
-        <input type="submit" value="Sub"/>
-      </form>
+      <div>
+        <form>
+          <input type="text" value={this.state.text} onChange={this.handleChange} />
+          <button onClick={this.handleSubmit}>Submit</button>
+        </form>
+        <List items={this.state.items} />
+      </div>
     );
   }
 }
 
-class Items extends React.Component {
-  render() {
-    return(
-      <div>{this.props.passedValue}</div>
-    );
-  }
-}
 
-ReactDOM.render(
+const List = props => (
+  <div>
+    {
+      props.items.map((item, index) => <div key={index}>{item}</div>)
+    }
+  </div>
+);
+
+ReactDOM.render (
   <Form />,
   document.getElementById('root')
 );
